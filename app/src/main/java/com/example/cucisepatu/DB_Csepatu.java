@@ -63,6 +63,20 @@ public boolean delOne(ModelKust modelKust){
     }
 
 }
+    public boolean updateOne(ModelKust modelKust) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KUSTOMER_NAME, modelKust.getNama());
+        values.put(KUSTOMER_AGE, modelKust.getUsia());
+        values.put(ACTIVE_CUSTOMER, modelKust.isActive() ? 1 : 0);
+
+        String whereClause = KOLOM_ID + " = ?";
+        String[] whereArgs = {String.valueOf(modelKust.getId())};
+
+        return db.update(TABLE_KUSTOMER, values, whereClause, whereArgs) > 0;
+    }
+
     public List<ModelKust> getEveryone(){
         List<ModelKust> returnList = new ArrayList<>();
 
@@ -93,4 +107,28 @@ public boolean delOne(ModelKust modelKust){
         db.close();
        return returnList;
     }
+    public ModelKust getOne(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_KUSTOMER,
+                new String[]{KOLOM_ID, KUSTOMER_NAME, KUSTOMER_AGE, ACTIVE_CUSTOMER},
+                KOLOM_ID + "=?",
+                new String[]{String.valueOf(id)},
+                null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            int kustomrID = cursor.getInt(0);
+            String kustomrNM = cursor.getString(1);
+            int kustomrAge = cursor.getInt(2);
+            boolean kustomrActive = cursor.getInt(3) == 1;
+
+            ModelKust modelKust = new ModelKust(kustomrID, kustomrNM, kustomrAge, kustomrActive);
+            cursor.close();
+            return modelKust;
+        } else {
+            return null;
+        }
+    }
+
 }

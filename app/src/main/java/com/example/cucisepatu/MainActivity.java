@@ -1,7 +1,9 @@
 package com.example.cucisepatu;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -78,20 +80,61 @@ public class MainActivity extends AppCompatActivity {
                 ShowDataToLV();
             }
         });
-        lv_Kust.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-@Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-ModelKust clickedKustomr = (ModelKust) parent.getItemAtPosition(position);
-dbCsepatu.delOne(clickedKustomr);
-ShowDataToLV();
-    Toast.makeText(MainActivity.this, "Data Terhapus ", Toast.LENGTH_SHORT).show();
+//        lv_Kust.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+//    @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+//    ModelKust clickedKustomr = (ModelKust) parent.getItemAtPosition(position);
+//    dbCsepatu.delOne(clickedKustomr);
+//    ShowDataToLV();
+//        Toast.makeText(MainActivity.this, "Data Terhapus ", Toast.LENGTH_SHORT).show();
+//
+//    }
+//        });
+        lv_Kust.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final ModelKust clickedKustomr = (ModelKust) parent.getItemAtPosition(position);
 
-}
+                // Tampilkan AlertDialog untuk memilih operasi
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Pilih Operasi")
+                        .setItems(new CharSequence[]{"Perbarui", "Hapus"}, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        // Operasi perbarui
+                                        // Panggil metode untuk mendapatkan data berdasarkan ID
+                                        ModelKust modelToUpdate = dbCsepatu.getOne(clickedKustomr.getId());
+
+                                        // Lakukan operasi perbarui data (misalnya, tampilkan dialog perbarui)
+                                        showUpdateDialog(modelToUpdate);
+                                        break;
+
+                                    case 1:
+                                        // Operasi hapus
+                                        // Panggil metode untuk menghapus data
+                                        dbCsepatu.delOne(clickedKustomr);
+
+                                        // Refresh tampilan setelah menghapus data
+                                        ShowDataToLV();
+                                        break;
+                                }
+                            }
+                        });
+                builder.show();
+            }
         });
-     }
+
+    }
 
     private void ShowDataToLV() {
         kustomrArrayAdp = new ArrayAdapter<ModelKust>(MainActivity.this, android.R.layout.simple_list_item_1, dbCsepatu.getEveryone());
         lv_Kust.setAdapter(kustomrArrayAdp);
     }
+    private void showUpdateDialog(final ModelKust modelToUpdate) {
+        // Tampilkan pesan Toast untuk memberitahu pengguna bahwa operasi perbarui akan diimplementasikan
+        Toast.makeText(MainActivity.this, "Fungsi perbarui akan diimplementasikan.", Toast.LENGTH_SHORT).show();
+    }
+
 }

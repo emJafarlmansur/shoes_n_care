@@ -22,13 +22,11 @@ public class ModelKust {
 
     @Override
     public String toString() {
-        return "ModelKust{" +
-                "id=" + id +
-                ", nama='" + nama + '\'' +
-                ", usia=" + usia +
-                ", isActive=" + isActive +
-                '}';
+        return "ID: " + id +
+                ", Nama: " + nama +
+                ", Usia: " + usia;
     }
+
 
     //getset
 
